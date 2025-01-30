@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scan Result</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <h1>Email Scan Result</h1>
+ 
+    <div class="container">
+        <p>Email Classification: <strong>{{ result }}</strong></p>
+        
+        <h2>Attachments</h2>
+        <ul class="attachments-list">
+        {% for attachment in attachments %}
+            <li>
+                <span>{{ attachment.filename }}</span> - {{ attachment.attachment_safe }}
+            </li>
+        {% endfor %}
+        </ul>
+        <button class="back-btn" onclick="window.history.back()">Back</button>
+    
+    </div>
+</body>
+</html>
