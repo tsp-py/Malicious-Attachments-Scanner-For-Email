@@ -1,9 +1,7 @@
 from helpers.imports import *
 from config.patterns import patterns, suspicious_indicators
-from io import BytesIO
 import json
-import requests
-from typing import Dict, List, Any, Union
+from typing import Dict, Any
 
 class SecurityScanner:
     def __init__(self):
@@ -109,74 +107,3 @@ class EmailScanner(SecurityScanner):
 
         return results
 
-class InstagramScanner(SecurityScanner):
-    def scan_instagram_message(self, message_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Scan Instagram message content and media for security threats
-        """
-        results = {
-            "is_malicious": False,
-            "threats": [],
-            "media_scan": []
-        }
-
-        # Check message content
-        content_scan = self.check_message_content(message_data.get("text", ""))
-        results["threats"].extend(content_scan["threats"])
-        results["is_malicious"] = content_scan["is_malicious"]
-
-        # Check media attachments
-        for media in message_data.get("media", []):
-            media_result = {
-                "media_type": media.get("type"),
-                "is_malicious": False
-            }
-            
-            # Check media URL or content if available
-            if media.get("url"):
-                content_scan = self.check_message_content(media["url"])
-                if content_scan["is_malicious"]:
-                    media_result["is_malicious"] = True
-                    results["threats"].append(f"Suspicious media content detected")
-            
-            results["media_scan"].append(media_result)
-            if media_result["is_malicious"]:
-                results["is_malicious"] = True
-
-        return results
-
-class WhatsAppScanner(SecurityScanner):
-    def scan_whatsapp_message(self, message_data: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Scan WhatsApp message content and media for security threats
-        """
-        results = {
-            "is_malicious": False,
-            "threats": [],
-            "media_scan": []
-        }
-
-        # Check message content
-        content_scan = self.check_message_content(message_data.get("text", ""))
-        results["threats"].extend(content_scan["threats"])
-        results["is_malicious"] = content_scan["is_malicious"]
-
-        # Check media attachments
-        for media in message_data.get("media", []):
-            media_result = {
-                "media_type": media.get("type"),
-                "filename": media.get("filename"),
-                "is_malicious": False
-            }
-            
-            # Check media content if available
-            if media.get("content"):
-                if self.check_attachment_malicious(media.get("filename", ""), media["content"]):
-                    media_result["is_malicious"] = True
-                    results["threats"].append(f"Suspicious media content detected: {media.get('filename')}")
-            
-            results["media_scan"].append(media_result)
-            if media_result["is_malicious"]:
-                results["is_malicious"] = True
-
-        return results

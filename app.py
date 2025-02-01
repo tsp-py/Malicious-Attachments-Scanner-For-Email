@@ -2,7 +2,6 @@ from flask import Flask, render_template, request
 from helpers.imports import *
 from config.patterns import patterns, suspicious_indicators
 import webbrowser
-import os
 from io import BytesIO
 
 
