@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Processed Emails</title>
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+    <h1>Processed Emails</h1>
+    {% if emails %}
+        <table>
+            <tr>
+                <th>Index</th>
+                <th>From</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Attachments</th>
+                <th>Action</th>
+            </tr>
+            {% for email in emails %}
+                <tr>
+                    <td>{{ email.index }}</td>
+                    <td>{{ email.from }}</td>
+                    <td>{{ email.subject }}</td>
+                    <td>{{ email.date }}</td>
+                    <td>
+                        <ul>
+                            {% for attachment in email.attachments %}
+                                <li>{{ attachment.filename }} </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>
+                        <form action="/scan/{{ email.id }}" method="post">
+                            <input type="hidden" name="email_data" value="{{ email.message }}">
+                            {% for attachment in email.attachments %}
+                                <input type="hidden" name="attachment_safe_{{ attachment.filename }}" value="{{ attachment.attachment_safe }}">
+                            {% endfor %}
+                            <button type="submit">Scan</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No emails found for the given date range.</p>
+    {% endif %}
+    
+    <button class="back-btn" onclick="window.history.back()">Back</button>
+</body>
+</html>
